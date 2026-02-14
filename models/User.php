@@ -2,12 +2,12 @@
 class User
 {
     private $conn;
-    private $table_name = "usuarios";
+    private $table_name = "users";
 
     public $id;
-    public $n_control;
     public $name;
-    public $entry_date;
+    public $email;
+    public $created_at;
 
     public function __construct($db)
     {
@@ -17,17 +17,17 @@ class User
     public function create()
     {
         $query = "INSERT INTO " . $this->table_name . " 
-                    SET n_control=:n_control, name=:name, entry_date=:entry_date";
+                  SET name=:name, email=:email, created_at=:created_at";
 
         $stmt = $this->conn->prepare($query);
 
-        $this->n_control = htmlspecialchars(strip_tags($this->n_control));
         $this->name = htmlspecialchars(strip_tags($this->name));
-        $this->entry_date = date('Y-m-d H:i:s');
+        $this->email = htmlspecialchars(strip_tags($this->email));
+        $this->created_at = date('Y-m-d H:i:s');
 
-        $stmt->bindParam(":n_control", $this->n_control);
         $stmt->bindParam(":name", $this->name);
-        $stmt->bindParam(":entry_date", $this->entry_date);
+        $stmt->bindParam(":email", $this->email);
+        $stmt->bindParam(":created_at", $this->created_at);
 
         if ($stmt->execute()) {
             $this->id = $this->conn->lastInsertId();
@@ -38,9 +38,9 @@ class User
 
     public function read()
     {
-        $query = "SELECT id, n_control, name, entry_date 
-                    FROM " . $this->table_name . " 
-                    ORDER BY entry_date DESC";
+        $query = "SELECT id, name, email, created_at 
+                  FROM " . $this->table_name . " 
+                  ORDER BY created_at DESC";
 
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
@@ -49,10 +49,10 @@ class User
 
     public function readOne()
     {
-        $query = "SELECT id, n_control, name, entry_date 
-                    FROM " . $this->table_name . " 
-                    WHERE id = :id 
-                    LIMIT 1";
+        $query = "SELECT id, name, email, created_at 
+                  FROM " . $this->table_name . " 
+                  WHERE id = :id 
+                  LIMIT 1";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":id", $this->id);
@@ -61,9 +61,9 @@ class User
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($row) {
-            $this->n_control = $row['n_control'];
             $this->name = $row['name'];
-            $this->entry_date = $row['entry_date'];
+            $this->email = $row['email'];
+            $this->created_at = $row['created_at'];
             return true;
         }
         return false;
@@ -72,17 +72,17 @@ class User
     public function update()
     {
         $query = "UPDATE " . $this->table_name . " 
-                    SET n_control = :n_control, name = :name 
-                    WHERE id = :id";
+                  SET name = :name, email = :email 
+                  WHERE id = :id";
 
         $stmt = $this->conn->prepare($query);
 
-        $this->n_control = htmlspecialchars(strip_tags($this->n_control));
         $this->name = htmlspecialchars(strip_tags($this->name));
+        $this->email = htmlspecialchars(strip_tags($this->email));
         $this->id = htmlspecialchars(strip_tags($this->id));
 
-        $stmt->bindParam(':n_control', $this->n_control);
         $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':id', $this->id);
 
         if ($stmt->execute()) {

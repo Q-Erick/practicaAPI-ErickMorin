@@ -31,9 +31,9 @@ class UserResource
                 extract($row);
                 $user_item = array(
                     "id" => $id,
-                    "n_control" => $n_control,
                     "name" => $name,
-                    "entry_date" => $entry_date
+                    "email" => $email,
+                    "created_at" => $created_at
                 );
                 array_push($users_arr["records"], $user_item);
             }
@@ -56,9 +56,9 @@ class UserResource
         if ($this->user->readOne()) {
             $user_arr = array(
                 "id" => $this->user->id,
-                "n_control" => $this->user->n_control,
                 "name" => $this->user->name,
-                "entry_date" => $this->user->entry_date
+                "email" => $this->user->email,
+                "created_at" => $this->user->created_at
             );
 
             http_response_code(200);
@@ -76,9 +76,9 @@ class UserResource
 
         $data = json_decode(file_get_contents("php://input"));
 
-        if (!empty($data->name)) {
-            $this->user->n_control = isset($data->n_control) ? $data->n_control : null;
+        if (!empty($data->name) && !empty($data->email)) {
             $this->user->name = $data->name;
+            $this->user->email = $data->email;
 
             if ($this->user->create()) {
                 http_response_code(201);
@@ -105,9 +105,9 @@ class UserResource
 
         $this->user->id = $id;
 
-        if (!empty($data->name)) {
-            $this->user->n_control = isset($data->n_control) ? $data->n_control : null;
+        if (!empty($data->name) && !empty($data->email)) {
             $this->user->name = $data->name;
+            $this->user->email = $data->email;
 
             if ($this->user->update()) {
                 http_response_code(200);

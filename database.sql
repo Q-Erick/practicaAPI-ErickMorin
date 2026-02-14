@@ -1,9 +1,9 @@
 -- Tabla de usuarios
-CREATE TABLE IF NOT EXISTS usuarios (
+CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    n_control VARCHAR(9),
-    name VARCHAR(200) NOT NULL,
-    entry_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabla de productos
